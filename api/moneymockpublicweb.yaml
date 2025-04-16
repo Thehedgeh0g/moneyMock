@@ -1,0 +1,64 @@
+openapi: 3.0.0
+info:
+  title: Currency Rate API (Mocked)
+  description: API для получения курса валют с использованием MOCK (например, через Mountebank)
+  version: 1.0.0
+
+paths:
+  /api/rate:
+    get:
+      summary: Получить курс валюты (от USD к другой)
+      description: Возвращает курс валюты USD к указанной валюте (например, EUR)
+      parameters:
+        - in: query
+          name: target
+          required: true
+          schema:
+            type: string
+            enum: [EUR, GBP, JPY]
+            example: EUR
+          description: Целевая валюта (например, EUR, GBP, JPY)
+      responses:
+        '200':
+          description: Успешный ответ с курсом валют
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rate"
+        '400':
+          description: Некорректный запрос (например, отсутствует параметр)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Ошибка при получении курса
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Failed to get rate
+components:
+  schemas:
+    rate:
+      type: object
+      required:
+        - base
+        - target
+        - rate
+      properties:
+        base:
+          type: string
+          example: USD
+        target:
+          type: string
+          example: EUR
+        rate:
+          type: integer
+          example: 0.91
